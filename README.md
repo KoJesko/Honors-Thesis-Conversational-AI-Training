@@ -151,7 +151,7 @@ SERVER_PORT=8080 python server.py
 
 ## 📝 License
 
-MIT License - feel free to use and modify!
+AGPL License - feel free to use and modify!
 
 ## 🙏 Acknowledgments
 

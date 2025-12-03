@@ -1,0 +1,23 @@
+# Core Server
+fastapi
+uvicorn[standard]
+websockets
+
+# Machine Learning / AI
+torch
+transformers
+accelerate
+bitsandbytes
+optimum
+
+# Audio Processing
+soundfile
+librosa
+scipy
+edge-tts
+
+# Data & Utilities
+numpy
+sentencepiece
+huggingface-hub
+datasets

@@ -17,6 +17,7 @@ httpd = http.server.HTTPServer(SERVER_ADDRESS, http.server.SimpleHTTPRequestHand
 
 # Create an SSL context
 ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ctx.minimum_version = ssl.TLSVersion.TLSv1_2
 ctx.load_cert_chain(certfile="cert.pem", keyfile="key.pem")
 
 # Wrap the socket

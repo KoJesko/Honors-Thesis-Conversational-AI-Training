@@ -28,7 +28,7 @@ jobs:
           pip install pip-audit bandit
       
       - name: Run pip-audit for vulnerability scanning
-        run: pip-audit -r requirements.txt --strict || true
+        run: pip-audit -r requirements.txt --strict
       
       - name: Run bandit security linting
         run: bandit -r . --exclude ./node_modules -ll

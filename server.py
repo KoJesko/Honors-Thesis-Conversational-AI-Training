@@ -67,20 +67,19 @@ async def serve_static(filename: str):
     Security: Validates that requested files are within PROJECT_ROOT to prevent
     directory traversal attacks (e.g., ../../etc/passwd).
     """
-    # Resolve both paths to handle symlinks and relative paths consistently
-    safe_root = PROJECT_ROOT.resolve()
     requested_path = (PROJECT_ROOT / filename).resolve()
+    fallback_response = FileResponse(PROJECT_ROOT / "index.html")
     
     # Verify the resolved path is within the safe root directory
     try:
-        requested_path.relative_to(safe_root)
+        requested_path.relative_to(PROJECT_ROOT)
     except ValueError:
-        # Path is outside safe_root, return default page
-        return FileResponse(safe_root / "index.html")
+        # Path is outside PROJECT_ROOT, return default page
+        return fallback_response
     
     # Ensure the path exists and is a file (not a directory)
     if not requested_path.is_file():
-        return FileResponse(safe_root / "index.html")
+        return fallback_response
     
     return FileResponse(requested_path)
 

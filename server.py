@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 # --- Ensure we are running inside the project virtualenv (myenv) ---
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent.resolve()
 VENV_DIR = PROJECT_ROOT / "myenv"
 VENV_BIN = "Scripts" if os.name == "nt" else "bin"
 VENV_PYTHON = VENV_DIR / VENV_BIN / ("python.exe" if os.name == "nt" else "python")
@@ -86,19 +86,13 @@ async def serve_static(filename: str):
         candidate_path = (PROJECT_ROOT / filename).resolve()
         # Only allow serving files that reside inside PROJECT_ROOT
         try:
-            # For Python 3.9+, use .is_relative_to; otherwise, use .relative_to
-            if not candidate_path.is_relative_to(PROJECT_ROOT):
-                response = FileResponse(PROJECT_ROOT / "index.html")
-                response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-                return response
-        except AttributeError:
-            # Fallback for Python <3.9
-            try:
-                candidate_path.relative_to(PROJECT_ROOT)
-            except ValueError:
-                response = FileResponse(PROJECT_ROOT / "index.html")
-                response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-                return response
+            # Use Path.relative_to on resolved paths to enforce containment
+            candidate_path.relative_to(PROJECT_ROOT)
+        except ValueError:
+            # Path is outside PROJECT_ROOT; fall back to index.html
+            response = FileResponse(PROJECT_ROOT / "index.html")
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            return response
         if candidate_path.exists() and candidate_path.is_file():
             response = FileResponse(candidate_path)
             # No cache for HTML/JS files to ensure latest version
